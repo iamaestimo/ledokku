@@ -26,19 +26,19 @@ function define-colors {
 }
 
 function system-info() {
-  
+
   # Finding Information about the server/VPS
   ## Basic VPS info
   DOKKU_SSH_HOST=$(curl -4 ifconfig.co)
   OS=$( $(compgen -G "/etc/*release" > /dev/null) && cat /etc/*release | grep ^NAME | tr -d 'NAME="' || echo "${OSTYPE//[0-9.]/}")
 
   ## Dokku Configuration Variables
-  LATEST_DOKKU_VERSION="0.24.10"
-  MINIMUM_DOKKU_VERSION="0.24.0"
+  LATEST_DOKKU_VERSION="0.30.9"
+  MINIMUM_DOKKU_VERSION="0.30.9"
 }
 
 function check-whiptail() {
-  
+
   # Checking if whiptail is available or not
   if which whiptail >/dev/null; then
       echo "${GREEN}whiptail exists${END}"
@@ -53,7 +53,7 @@ function check-whiptail() {
 }
 
 function check-root() {
-  
+
   # Check root and if not root take permissions (Some providers does not support password less sudo)
   ## It is always better to do this.
   ## We will not face any further issues, during any sort of compulsory sudo commands; like the case for installing plugins in Dokku or Giving permissions to our scripts
@@ -95,7 +95,7 @@ function system-update {
 }
 
 function ensure-dokku() {
-  
+
   # Confirming the existence of Dokku
   ## If exists => check if existing and latest dokku versions are same => If same version => Continue to next step
   ###  In case of different dokku versions => Prompt a (warning & dokku upgrade) dialog box (Now it is up to the user to update or skip)
@@ -105,7 +105,7 @@ function ensure-dokku() {
       # Checking Dokku version and comparing it with the latest Version
       # In case of version changes in dokku, we need to change this variable: LATEST_DOKKU_VERSION.
       # We can also rename the variable => LATEST_DOKKU_VERSION to PREFERRED_DOKKU_VERSION
-      
+
       EXISTING_DOKKU_VERSION="$(dokku version | awk '{print $3}')"
 
       if [ "$( echo -e "${MINIMUM_DOKKU_VERSION}\\n${LATEST_DOKKU_VERSION}\\n${EXISTING_DOKKU_VERSION}" | sort --sort=version | head -2 | tail -1)" == ${EXISTING_DOKKU_VERSION} ];
@@ -115,7 +115,7 @@ function ensure-dokku() {
         then
           # Continue the script
           echo "${GREEN}Awesome! You have the latest dokku version${END}"
-        else 
+        else
           # Prompt upgrade warning (upgrade or skip)
           whiptail --title "Warning !!" --msgbox "Read carefully before proceeding:\n\nYou are currently using dokku version: ${EXISTING_DOKKU_VERSION} but the latest dokku version was: ${LATEST_DOKKU_VERSION}\n\nIn the next dialog box, you can upgrade your dokku or skip to ledokku installation \n\nFor more info check the dokku CHANGELOG before doing the upgrade: https://github.com/dokku/dokku/releases" 20 60
           # Prompt for upgrade
